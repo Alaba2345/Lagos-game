@@ -3,29 +3,21 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
+    <meta name="viewport"
         content="width=device-width,
         initial-scale=1.0,
         maximum-scale=1.0,
-        user-scalable=no"
-    >
+        user-scalable=no">
 
     <title>Lagos Online</title>
 
     <style>
-        html,
-        body {
+        html, body {
             margin: 0;
-            padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #000;
-        }
-
-        body {
-            touch-action: none;
+            background: #87ceeb;
         }
 
         canvas {
@@ -38,21 +30,14 @@
             position: fixed;
             inset: 0;
             z-index: 10;
-
             display: none;
             align-items: center;
             justify-content: center;
-
             background: #111;
             color: white;
-
             font-family: Arial, sans-serif;
             text-align: center;
             font-size: 20px;
-        }
-
-        #rotateMessage div {
-            max-width: 300px;
         }
 
         @media (orientation: portrait) {
@@ -66,11 +51,8 @@
 <body>
 
 <div id="rotateMessage">
-    <div>
-        📱<br><br>
-        <strong>Lagos Online</strong><br><br>
-        Rotate your phone sideways to play.
-    </div>
+    📱<br><br>
+    Rotate your phone sideways to play Lagos Online.
 </div>
 
 <script type="module">
@@ -79,9 +61,9 @@ import * as THREE from
 "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 
 
-// ==========================
+// ==============================
 // WORLD
-// ==========================
+// ==============================
 
 const scene = new THREE.Scene();
 
@@ -89,34 +71,35 @@ scene.background =
     new THREE.Color(0x87ceeb);
 
 
-// ==========================
+// ==============================
 // CAMERA
-// ==========================
+// ==============================
 
 const camera =
     new THREE.PerspectiveCamera(
         60,
-        window.innerWidth / window.innerHeight,
+        window.innerWidth /
+        window.innerHeight,
         0.1,
-        3000
+        2000
     );
 
 camera.position.set(
     0,
     8,
-    14
+    18
 );
 
 camera.lookAt(
     0,
-    2,
+    3,
     0
 );
 
 
-// ==========================
+// ==============================
 // GRAPHICS
-// ==========================
+// ==============================
 
 const renderer =
     new THREE.WebGLRenderer({
@@ -140,9 +123,9 @@ document.body.appendChild(
 );
 
 
-// ==========================
-// LIGHTING
-// ==========================
+// ==============================
+// LIGHT
+// ==============================
 
 const sunlight =
     new THREE.DirectionalLight(
@@ -151,28 +134,24 @@ const sunlight =
     );
 
 sunlight.position.set(
+    30,
     50,
-    80,
-    30
+    20
 );
 
 scene.add(sunlight);
 
-
-const ambientLight =
+scene.add(
     new THREE.AmbientLight(
         0xffffff,
         1
-    );
-
-scene.add(
-    ambientLight
+    )
 );
 
 
-// ==========================
+// ==============================
 // GROUND
-// ==========================
+// ==============================
 
 const ground =
     new THREE.Mesh(
@@ -181,48 +160,276 @@ const ground =
             500
         ),
         new THREE.MeshStandardMaterial({
-            color: 0x3a7d44
+            color: 0x4d8b45
         })
     );
 
 ground.rotation.x =
     -Math.PI / 2;
 
-scene.add(
-    ground
-);
+scene.add(ground);
 
 
-// ==========================
-// TEST BUILDING
-// ==========================
+// ==============================
+// ROAD
+// ==============================
 
-const building =
+const road =
     new THREE.Mesh(
-        new THREE.BoxGeometry(
-            8,
-            8,
-            8
+        new THREE.PlaneGeometry(
+            14,
+            300
         ),
         new THREE.MeshStandardMaterial({
-            color: 0xd19a66
+            color: 0x303030
         })
     );
 
-building.position.set(
-    0,
-    4,
-    0
+road.rotation.x =
+    -Math.PI / 2;
+
+road.position.y =
+    0.02;
+
+scene.add(road);
+
+
+// ROAD MARKINGS
+
+for (
+    let z = -140;
+    z < 150;
+    z += 12
+) {
+
+    const marking =
+        new THREE.Mesh(
+            new THREE.PlaneGeometry(
+                0.35,
+                6
+            ),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff
+            })
+        );
+
+    marking.rotation.x =
+        -Math.PI / 2;
+
+    marking.position.set(
+        0,
+        0.04,
+        z
+    );
+
+    scene.add(marking);
+}
+
+
+// ==============================
+// HOUSE FUNCTION
+// ==============================
+
+function createHouse(
+    x,
+    z
+) {
+
+    const house =
+        new THREE.Group();
+
+
+    // Main building
+
+    const body =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                10,
+                6,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0xd6b27a
+            })
+        );
+
+    body.position.y =
+        3;
+
+    house.add(body);
+
+
+    // Roof
+
+    const roof =
+        new THREE.Mesh(
+            new THREE.ConeGeometry(
+                7.5,
+                3,
+                4
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0x8b3030
+            })
+        );
+
+    roof.rotation.y =
+        Math.PI / 4;
+
+    roof.position.y =
+        7.5;
+
+    house.add(roof);
+
+
+    // Door
+
+    const door =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                1.8,
+                3,
+                0.2
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0x4a2818
+            })
+        );
+
+    door.position.set(
+        0,
+        1.5,
+        4.1
+    );
+
+    house.add(door);
+
+
+    // Windows
+
+    for (
+        const xPos of [-3, 3]
+    ) {
+
+        const window =
+            new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    1.8,
+                    1.6,
+                    0.2
+                ),
+                new THREE.MeshStandardMaterial({
+                    color: 0x6bb6d9
+                })
+            );
+
+        window.position.set(
+            xPos,
+            3.2,
+            4.1
+        );
+
+        house.add(window);
+    }
+
+
+    house.position.set(
+        x,
+        0,
+        z
+    );
+
+    scene.add(house);
+}
+
+
+// ==============================
+// LAGOS HOUSES
+// ==============================
+
+createHouse(
+    -13,
+    -12
 );
 
-scene.add(
-    building
+createHouse(
+    13,
+    -35
+);
+
+createHouse(
+    -13,
+    -60
+);
+
+createHouse(
+    13,
+    -85
 );
 
 
-// ==========================
+// ==============================
+// TREES
+// ==============================
+
+function createTree(
+    x,
+    z
+) {
+
+    const trunk =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                0.6,
+                0.8,
+                4,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0x70452a
+            })
+        );
+
+    trunk.position.set(
+        x,
+        2,
+        z
+    );
+
+    scene.add(trunk);
+
+
+    const leaves =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                3,
+                12,
+                12
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0x237a32
+            })
+        );
+
+    leaves.position.set(
+        x,
+        6,
+        z
+    );
+
+    scene.add(leaves);
+}
+
+
+createTree(-22, -5);
+createTree(22, -20);
+createTree(-22, -45);
+createTree(22, -70);
+
+
+// ==============================
 // GAME LOOP
-// ==========================
+// ==============================
 
 function gameLoop() {
 
@@ -239,9 +446,9 @@ function gameLoop() {
 gameLoop();
 
 
-// ==========================
-// SCREEN RESIZE
-// ==========================
+// ==============================
+// RESIZE
+// ==============================
 
 window.addEventListener(
     "resize",
