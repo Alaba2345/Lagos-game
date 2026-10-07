@@ -2,18 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Lagos online</title>
+    <meta
+        name="viewport"
+        content="width=device-width,
+        initial-scale=1.0,
+        maximum-scale=1.0,
+        user-scalable=no"
+    >
+
+    <title>Lagos Online</title>
 
     <style>
-        html, body {
+        html,
+        body {
             margin: 0;
+            padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
             background: #000;
+        }
+
+        body {
+            touch-action: none;
         }
 
         canvas {
@@ -21,43 +33,101 @@
             width: 100%;
             height: 100%;
         }
+
+        #rotateMessage {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            background: #111;
+            color: white;
+
+            font-family: Arial, sans-serif;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        #rotateMessage div {
+            max-width: 300px;
+        }
+
+        @media (orientation: portrait) {
+            #rotateMessage {
+                display: flex;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+<div id="rotateMessage">
+    <div>
+        📱<br><br>
+        <strong>Lagos Online</strong><br><br>
+        Rotate your phone sideways to play.
+    </div>
+</div>
 
 <script type="module">
 
 import * as THREE from
 "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 
+
+// ==========================
 // WORLD
+// ==========================
+
 const scene = new THREE.Scene();
 
 scene.background =
     new THREE.Color(0x87ceeb);
 
 
+// ==========================
 // CAMERA
+// ==========================
+
 const camera =
     new THREE.PerspectiveCamera(
-        70,
+        60,
         window.innerWidth / window.innerHeight,
         0.1,
-        2000
+        3000
     );
 
-camera.position.set(0, 5, 10);
+camera.position.set(
+    0,
+    8,
+    14
+);
+
+camera.lookAt(
+    0,
+    2,
+    0
+);
 
 
+// ==========================
 // GRAPHICS
+// ==========================
+
 const renderer =
     new THREE.WebGLRenderer({
         antialias: true
     });
 
 renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
+    Math.min(
+        window.devicePixelRatio,
+        1.5
+    )
 );
 
 renderer.setSize(
@@ -70,31 +140,40 @@ document.body.appendChild(
 );
 
 
-// LIGHT
-const sun =
+// ==========================
+// LIGHTING
+// ==========================
+
+const sunlight =
     new THREE.DirectionalLight(
         0xffffff,
         2
     );
 
-sun.position.set(
-    20,
-    30,
-    10
+sunlight.position.set(
+    50,
+    80,
+    30
 );
 
-scene.add(sun);
+scene.add(sunlight);
 
-const ambient =
+
+const ambientLight =
     new THREE.AmbientLight(
         0xffffff,
         1
     );
 
-scene.add(ambient);
+scene.add(
+    ambientLight
+);
 
 
+// ==========================
 // GROUND
+// ==========================
+
 const ground =
     new THREE.Mesh(
         new THREE.PlaneGeometry(
@@ -109,10 +188,15 @@ const ground =
 ground.rotation.x =
     -Math.PI / 2;
 
-scene.add(ground);
+scene.add(
+    ground
+);
 
 
-// FIRST BUILDING
+// ==========================
+// TEST BUILDING
+// ==========================
+
 const building =
     new THREE.Mesh(
         new THREE.BoxGeometry(
@@ -125,20 +209,21 @@ const building =
         })
     );
 
-building.position.y = 4;
-
-scene.add(building);
-
-
-// CAMERA TARGET
-camera.lookAt(
+building.position.set(
     0,
-    2,
+    4,
     0
 );
 
+scene.add(
+    building
+);
 
+
+// ==========================
 // GAME LOOP
+// ==========================
+
 function gameLoop() {
 
     requestAnimationFrame(
@@ -154,7 +239,10 @@ function gameLoop() {
 gameLoop();
 
 
-// RESIZE
+// ==========================
+// SCREEN RESIZE
+// ==========================
+
 window.addEventListener(
     "resize",
     () => {
@@ -169,7 +257,6 @@ window.addEventListener(
             window.innerWidth,
             window.innerHeight
         );
-
     }
 );
 
